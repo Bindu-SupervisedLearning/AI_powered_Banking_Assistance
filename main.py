@@ -92,10 +92,35 @@ import openai
 from dotenv import load_dotenv
 
 
-load_dotenv()
-os.environ['OPENAI_API_KEY'] = os.getenv("OPENAI_API_KEY")
-os.environ['GROQ_API_KEY'] = os.getenv("GROQ_API_KEY")
-groq_api_key = os.getenv("GROQ_API_KEY")
+# load_dotenv()
+# os.environ['OPENAI_API_KEY'] = os.getenv("OPENAI_API_KEY")
+# os.environ['GROQ_API_KEY'] = os.getenv("GROQ_API_KEY")
+# groq_api_key = os.getenv("GROQ_API_KEY")
+
+def get_api_keys():
+    # First try to load from .env file (local development)
+    load_dotenv()
+    groq_key = os.getenv("GROQ_API_KEY")
+    
+    # If not found in .env, try Streamlit Secrets (cloud deployment)
+    if groq_key is None:
+        try:
+            groq_key = st.secrets["GROQ_API_KEY"]
+        except Exception:
+            pass
+    
+    # If still not found, show error
+    if groq_key is None:
+        st.error("""
+        GROQ API key not found. Please ensure one of the following:
+        1. A .env file exists in your project root with GROQ_API_KEY
+        2. Streamlit Secrets are configured (for cloud deployment)
+        """)
+        st.stop()
+    
+    return groq_key
+
+groq_api_key = get_api_keys()
 
 llm = ChatGroq(
     groq_api_key=groq_api_key,
