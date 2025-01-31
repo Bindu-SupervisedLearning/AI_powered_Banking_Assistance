@@ -201,10 +201,6 @@
 
 
 
-
-
-
-
 import streamlit as st
 import os
 import time
@@ -219,6 +215,10 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 import openai
 from dotenv import load_dotenv
+
+
+if 'initialized' not in st.session_state:
+    st.session_state.initialized = False
 
 # API key management
 def get_api_keys():
@@ -436,41 +436,48 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# User Input
-user_prompt = st.text_input(
-    "How can I help you with your banking queries today?",
-    help="Ask about savings accounts, credit cards, debit cards, or any other banking services"
-)
+if not st.session_state.initialized:
+    st.markdown("### Step 1: Initialize the Banking Assistant")
+    if st.button("Initialize Banking Knowledge", type="primary",key="init_button"):
+        with st.spinner("Setting up banking information..."):
+            create_vector_embedding()
+        st.session_state.initialized = True
+        st.success("✔️ Banking assistant is ready to help")
+        st.rerun()  # Rerun to update the UI
 
-# Initialize Button
-if st.button("Initialize Banking Knowledge", type="primary"):
-    with st.spinner("Setting up banking information..."):
-        create_vector_embedding()
-    st.success("✔️ Banking assistant is ready to help")
 
 # Process Query and Display Response
-if user_prompt:
-    document_chain = create_stuff_documents_chain(llm, prompt)
-    retriever = st.session_state.vectors.as_retriever()
-    retrieval_chain = create_retrieval_chain(retriever, document_chain)
-    
-    with st.spinner("Finding the best answer for you..."):
-        start = time.process_time()
-        response = retrieval_chain.invoke({'input': user_prompt})
-        response_time = time.process_time() - start
-    
-    # Display the main response
-    st.markdown(f"""
-        <div class="response-container">
-            {response['answer']}
-        </div>
-    """, unsafe_allow_html=True)
-    
-    # Display relevant banking information
-    with st.expander("📑 Related Banking Information"):
-        for i, doc in enumerate(response['context']):
-            st.markdown(f"""
-                <div class="similar-doc">
-                    {doc.page_content}
-                </div>
-            """, unsafe_allow_html=True)
+if st.session_state.initialized:
+    st.markdown("### Step 2: Ask Your Question")
+    user_prompt = st.text_input(
+        "How can I help you with your banking queries today?",
+        help="Ask about savings accounts, credit cards, debit cards, or any other banking services",
+        key="user_input"
+    )
+
+    # Process Query and Display Response
+    if user_prompt:
+        document_chain = create_stuff_documents_chain(llm, prompt)
+        retriever = st.session_state.vectors.as_retriever()
+        retrieval_chain = create_retrieval_chain(retriever, document_chain)
+        
+        with st.spinner("Finding the best answer for you..."):
+            start = time.process_time()
+            response = retrieval_chain.invoke({'input': user_prompt})
+            response_time = time.process_time() - start
+        
+        # Display the main response
+        st.markdown(f"""
+            <div class="response-container">
+                {response['answer']}
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # Display relevant banking information
+        with st.expander("📑 Related Banking Information"):
+            for i, doc in enumerate(response['context']):
+                st.markdown(f"""
+                    <div class="similar-doc">
+                        {doc.page_content}
+                    </div>
+                """, unsafe_allow_html=True)
