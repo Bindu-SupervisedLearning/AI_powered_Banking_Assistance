@@ -168,16 +168,7 @@ st.markdown("""
             font-size: 14px;
         }
 
-        .title-bank {
-            font-size: 40px;
-            color: #004D40;
-            font-weight: bold;
-            padding: 20px;
-            text-align: center;
-            background-color: #E0F2F1;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
+        
     </style>
 """, unsafe_allow_html=True)
 
@@ -217,8 +208,6 @@ def create_vector_embedding():
         )
 
 # Streamlit UI - Updated Header Section
-<div class="title-bank">AI powered Banking Assistance</div>
-    """, unsafe_allow_html=True)
 st.title("AI powered Banking Assistance")
 # st.markdown('<p class="main-title">AI powered Banking Assistance</p>', unsafe_allow_html=True)
 st.markdown('<div class="header-divider"></div>', unsafe_allow_html=True)
