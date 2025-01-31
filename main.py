@@ -206,7 +206,8 @@ def create_vector_embedding():
         )
 
 # Streamlit UI - Updated Header Section
-st.markdown('<p class="main-title">AI powered Banking Assistance</p>', unsafe_allow_html=True)
+st.title("AI powered Banking Assistance")
+# st.markdown('<p class="main-title">AI powered Banking Assistance</p>', unsafe_allow_html=True)
 st.markdown('<div class="header-divider"></div>', unsafe_allow_html=True)
 st.markdown("""
     <p class="subtitle">
@@ -229,7 +230,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.title("AI powered Banking Assistance")
+
 user_prompt = st.text_input(
     "How can I help you with your banking queries today?",
     help="Ask about savings accounts, credit cards, debit cards, or any other banking services"
