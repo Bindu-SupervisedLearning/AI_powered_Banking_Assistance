@@ -134,7 +134,7 @@ st.markdown("""
         
         .main-title {
             font-family: 'Roboto', sans-serif;
-            font-size: 50px;
+            font-size: 70px;
             font-weight: 700;
             color: #1E88E5;
             margin-bottom: 20px;
