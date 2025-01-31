@@ -229,7 +229,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# st.title("AI powered Banking Assistance")
+st.title("AI powered Banking Assistance")
 user_prompt = st.text_input(
     "How can I help you with your banking queries today?",
     help="Ask about savings accounts, credit cards, debit cards, or any other banking services"
